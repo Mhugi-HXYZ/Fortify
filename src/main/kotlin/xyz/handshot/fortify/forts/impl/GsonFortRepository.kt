@@ -58,7 +58,8 @@ class GsonFortRepository(val folder: File) : FortRepository {
 
     override fun findAll(): Array<Fort> {
         return when (folder.exists()) {
-            true -> folder.listFiles().filter { it.nameWithoutExtension != "_index" }.mapNotNull { findById(UUID.fromString(it.nameWithoutExtension)) }.toTypedArray()
+            true -> folder.listFiles().filter { it.nameWithoutExtension != "_index" }
+                .mapNotNull { findById(UUID.fromString(it.nameWithoutExtension)) }.toTypedArray()
             false -> emptyArray()
         }
     }
@@ -81,10 +82,23 @@ class GsonFortRepository(val folder: File) : FortRepository {
     override fun delete(fort: Fort) {
         val file = getFile(fort.id)
         file.delete()
+        removeOwner(fort.owner)
     }
 
     private fun getFile(id: UUID): File {
         return File(folder, "$id.json")
+    }
+
+    private fun removeOwner(owner: UUID) {
+        owners.remove(owner)
+        indexYml.set("owners.$owner", null)
+
+        if (!indexFile.exists()) {
+            indexFile.parentFile.mkdirs()
+            indexFile.createNewFile()
+        }
+
+        indexYml.save(indexFile)
     }
 
     private fun updateOwner(owner: UUID, fortId: UUID) {
