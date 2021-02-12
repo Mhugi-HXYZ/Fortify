@@ -55,7 +55,9 @@ class FortifyPlugin : JavaPlugin(), KoinComponent {
     }
 
     override fun onDisable() {
-        fortCache.list()
+        fortCache.list().forEach {
+            fortRepository.update(it)
+        }
     }
 
 }
