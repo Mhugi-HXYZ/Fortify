@@ -36,10 +36,9 @@ class FortListener : Listener, KoinComponent {
 
         val closestFort = FortUtils.getClosestFort(event.block.location)
         if (closestFort.first != null) {
-            // TODO Implement levels
-            val closestFortArea = 100
-            val newFortArea = 100
-            if (closestFort.second <= closestFortArea + newFortArea) {
+            val closestFortRadius = FortUtils.getFortRadius(closestFort.first!!)
+            val newFortArea = FortUtils.getDefaultFortRadius()
+            if (closestFort.second <= closestFortRadius + newFortArea) {
                 event.isCancelled = true
                 event.player.sendMessage("${ChatColor.RED}You are too close to an existing fort")
                 return

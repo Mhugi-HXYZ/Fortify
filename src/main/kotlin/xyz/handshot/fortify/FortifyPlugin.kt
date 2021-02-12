@@ -16,6 +16,10 @@ import xyz.handshot.fortify.forts.FortListener
 import xyz.handshot.fortify.forts.FortRepository
 import xyz.handshot.fortify.forts.impl.GsonFortRepository
 import xyz.handshot.fortify.forts.impl.SimpleFortCache
+import xyz.handshot.fortify.levels.LevelCache
+import xyz.handshot.fortify.levels.LevelRepository
+import xyz.handshot.fortify.levels.impl.SimpleLevelCache
+import xyz.handshot.fortify.levels.impl.YmlLevelRepository
 import xyz.handshot.fortify.utils.lore
 import xyz.handshot.fortify.utils.name
 import java.io.File
@@ -30,6 +34,8 @@ class FortifyPlugin : JavaPlugin(), KoinComponent {
 
     private val fortRepository: FortRepository by inject()
     private val fortCache: FortCache by inject()
+    private val levelRepository: LevelRepository by inject()
+    private val levelCache: LevelCache by inject()
     private val commandManager: PaperCommandManager by inject()
 
     override fun onEnable() {
@@ -40,12 +46,18 @@ class FortifyPlugin : JavaPlugin(), KoinComponent {
                     single { PaperCommandManager(this@FortifyPlugin) }
                     single<FortRepository> { GsonFortRepository(File(dataFolder, "forts/")) }
                     single<FortCache> { SimpleFortCache() }
+                    single<LevelRepository> { YmlLevelRepository(get()) }
+                    single<LevelCache> { SimpleLevelCache() }
                 }
             )
         }
 
         commandManager.registerCommand(FortifyCommand)
         server.pluginManager.registerEvents(FortListener(), this)
+
+        levelRepository.findAll().forEach {
+            levelCache.cache(it)
+        }
 
         fortRepository.findAll().forEach {
             fortCache.cache(it)

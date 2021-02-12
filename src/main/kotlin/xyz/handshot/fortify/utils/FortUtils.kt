@@ -1,20 +1,32 @@
 package xyz.handshot.fortify.utils
 
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import xyz.handshot.fortify.commands.FortifyCommand
 import xyz.handshot.fortify.forts.Fort
 import xyz.handshot.fortify.forts.FortCache
+import xyz.handshot.fortify.levels.LevelCache
 import java.util.*
 
 object FortUtils : KoinComponent {
 
     private val fortCache: FortCache by inject()
+    private val levelCache: LevelCache by inject()
 
     fun getFortFortification(fort: Fort): Int {
-        // TODO Implement levels
-        return 3
+        val level = levelCache.get(fort.level)!!
+        return level.fortification
+    }
+
+    fun getFortRadius(fort: Fort): Int {
+        val level = levelCache.get(fort.level)!!
+        return level.radius
+    }
+
+    fun getDefaultFortRadius(): Int{
+        return levelCache.get(1)!!.radius
     }
 
     fun getClosestFort(location: Location): Pair<Fort?, Double> {
@@ -33,7 +45,7 @@ object FortUtils : KoinComponent {
     fun getOwningFort(location: Location): Fort? {
         fortCache.list().filter { it.center != null }.forEach {
             val center = it.center!!
-            val areaSize = 100 // TODO Implement levels with differing area sizes
+            val areaSize = getFortRadius(it)
 
             val minX = center.x - areaSize
             val minZ = center.z - areaSize

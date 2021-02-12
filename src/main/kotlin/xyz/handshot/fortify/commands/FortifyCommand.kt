@@ -84,7 +84,7 @@ object FortifyCommand : BaseCommand(), KoinComponent {
         }
 
         if (ownedFort.members.contains(target.uniqueId)) {
-            sender.sendMessage("${ChatColor.RED}${target.name} is already a member")
+            sender.sendMessage("${ChatColor.RED}${target.name} is already a member of your fort")
             return
         }
 
@@ -111,7 +111,7 @@ object FortifyCommand : BaseCommand(), KoinComponent {
         }
 
         if (!ownedFort.members.contains(target.uniqueId)) {
-            sender.sendMessage("${ChatColor.RED}${target.name} is not a member")
+            sender.sendMessage("${ChatColor.RED}${target.name} is not a member of your fort")
             return
         }
 

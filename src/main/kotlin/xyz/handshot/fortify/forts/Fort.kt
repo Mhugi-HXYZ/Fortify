@@ -8,4 +8,5 @@ class Fort {
     var owner = UUID(0, 0)
     var members = mutableSetOf<UUID>()
     var center: Location? = null
+    var level = 1
 }
