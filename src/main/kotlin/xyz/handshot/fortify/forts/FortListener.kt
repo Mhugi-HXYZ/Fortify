@@ -28,7 +28,7 @@ class FortListener : Listener, KoinComponent {
             return
         }
 
-        if (repository.existsByOwner(event.player.uniqueId)) {
+        if (cache.list().any { it.owner == event.player.uniqueId }) {
             event.isCancelled = true
             event.player.sendMessage("${ChatColor.RED}You already have a fort")
             return
@@ -59,7 +59,7 @@ class FortListener : Listener, KoinComponent {
         event.player.sendMessage("${ChatColor.GREEN}You have created a fort!")
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     fun onInteract(event: PlayerInteractEvent) {
         if (!event.hasBlock()) {
             return

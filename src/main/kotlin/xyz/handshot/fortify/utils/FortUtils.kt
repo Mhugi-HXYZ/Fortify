@@ -3,8 +3,10 @@ package xyz.handshot.fortify.utils
 import org.bukkit.Location
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import xyz.handshot.fortify.commands.FortifyCommand
 import xyz.handshot.fortify.forts.Fort
 import xyz.handshot.fortify.forts.FortCache
+import java.util.*
 
 object FortUtils : KoinComponent {
 
@@ -47,6 +49,10 @@ object FortUtils : KoinComponent {
 
     fun getFortWithCenter(location: Location): Fort? {
         return fortCache.list().firstOrNull { location == it.center }
+    }
+
+    fun getOwnedFort(owner: UUID): Fort? {
+        return fortCache.list().firstOrNull { it.owner == owner }
     }
 
 }
