@@ -1,0 +1,30 @@
+1:
+  name: Level I
+  icon: stone
+  price: 0.0
+  radius: 10
+  fortification: 1
+2:
+  name: Level II
+  icon: iron_ore
+  price: 250.0
+  radius: 15
+  fortification: 2
+3:
+  name: Level III
+  icon: gold_ore
+  price: 1000.0
+  radius: 20
+  fortification: 3
+4:
+  name: Level IV
+  icon: diamond_ore
+  price: 5000.0
+  radius: 30
+  fortification: 3
+5:
+  name: Level V
+  icon: emerald
+  price: 25000.0
+  radius: 40
+  fortification: 5
