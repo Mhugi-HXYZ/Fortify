@@ -25,7 +25,7 @@ four:
   icon: diamond_ore
   price: 5000.0
   radius: 30
-  fortification: 3
+  fortification: 4
 five:
   level: 5
   name: Level V
