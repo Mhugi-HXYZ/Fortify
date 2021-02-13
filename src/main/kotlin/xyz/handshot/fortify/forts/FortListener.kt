@@ -1,5 +1,7 @@
 package xyz.handshot.fortify.forts
 
+import net.md_5.bungee.api.ChatMessageType
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Location
@@ -11,6 +13,7 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerMoveEvent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import xyz.handshot.fortify.FortifyPlugin
@@ -24,6 +27,9 @@ class FortListener : Listener, KoinComponent {
     private val timesBroken = mutableMapOf<Location, Int>()
     private val lastMessageSent = mutableMapOf<UUID, Long>()
     private val lastBlockBreak = mutableMapOf<UUID, Long>()
+
+    private val lastFortPresence = mutableMapOf<UUID, UUID>()
+    private val lastFortPresenceCheck = mutableMapOf<UUID, Long>()
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onBlockPlace(event: BlockPlaceEvent) {
@@ -103,6 +109,61 @@ class FortListener : Listener, KoinComponent {
             timesBroken[event.block.location] = timesBlockBroken + 1
             event.isCancelled = true
             return
+        }
+    }
+
+    // TODO Make this less spaghetti-y
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    fun onMove(event: PlayerMoveEvent) {
+        val lastCheck = lastFortPresenceCheck.getOrDefault(event.player.uniqueId, 0)
+        if (System.currentTimeMillis() - lastCheck < 500) {
+            return
+        }
+
+        lastFortPresenceCheck[event.player.uniqueId] = System.currentTimeMillis()
+
+        val owningFort = FortUtils.getOwningFort(event.to!!)
+
+        if (owningFort == null && lastFortPresence.containsKey(event.player.uniqueId)) {
+            val lastFort = lastFortPresence[event.player.uniqueId]!!
+            val fortName = Bukkit.getOfflinePlayer(lastFort).name
+            event.player.spigot()
+                .sendMessage(
+                    ChatMessageType.ACTION_BAR,
+                    *TextComponent.fromLegacyText(
+                        "You have left ${fortName}'s fort",
+                        net.md_5.bungee.api.ChatColor.YELLOW
+                    )
+                )
+            lastFortPresence.remove(event.player.uniqueId)
+            return
+        }
+
+        if (owningFort != null) {
+            if (lastFortPresence.containsKey(event.player.uniqueId)) {
+                if (owningFort.owner != lastFortPresence[event.player.uniqueId]) {
+                    val fortName = Bukkit.getOfflinePlayer(owningFort.owner).name
+                    event.player.spigot()
+                        .sendMessage(
+                            ChatMessageType.ACTION_BAR,
+                            *TextComponent.fromLegacyText(
+                                "You have entered ${fortName}'s fort",
+                                net.md_5.bungee.api.ChatColor.YELLOW
+                            )
+                        )
+                }
+            } else {
+                val fortName = Bukkit.getOfflinePlayer(owningFort.owner).name
+                event.player.spigot()
+                    .sendMessage(
+                        ChatMessageType.ACTION_BAR,
+                        *TextComponent.fromLegacyText(
+                            "You have entered ${fortName}'s fort",
+                            net.md_5.bungee.api.ChatColor.YELLOW
+                        )
+                    )
+                lastFortPresence[event.player.uniqueId] = owningFort.owner
+            }
         }
     }
 
