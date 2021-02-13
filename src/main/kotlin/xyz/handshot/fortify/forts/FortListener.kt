@@ -109,6 +109,8 @@ class FortListener : Listener, KoinComponent {
             timesBroken[event.block.location] = timesBlockBroken + 1
             event.isCancelled = true
             return
+        } else {
+            timesBroken.remove(event.block.location)
         }
     }
 
