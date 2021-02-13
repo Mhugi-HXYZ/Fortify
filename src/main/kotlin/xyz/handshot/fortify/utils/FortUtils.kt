@@ -1,10 +1,8 @@
 package xyz.handshot.fortify.utils
 
-import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import xyz.handshot.fortify.commands.FortifyCommand
 import xyz.handshot.fortify.forts.Fort
 import xyz.handshot.fortify.forts.FortCache
 import xyz.handshot.fortify.levels.LevelCache

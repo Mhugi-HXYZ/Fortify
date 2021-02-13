@@ -6,10 +6,7 @@ import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Subcommand
 import net.milkbowl.vault.economy.Economy
-import org.bukkit.Bukkit
-import org.bukkit.ChatColor
-import org.bukkit.Material
-import org.bukkit.OfflinePlayer
+import org.bukkit.*
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
@@ -67,7 +64,12 @@ object FortifyCommand : BaseCommand(), KoinComponent {
             return
         }
 
-        ownedFort.center?.block?.type = Material.AIR
+        if (ownedFort.center != null) {
+            ownedFort.center!!.block.type = Material.AIR
+            ownedFort.center!!.world?.dropItemNaturally(ownedFort.center!!, FortifyPlugin.ITEM_FORTS_HEART)
+            ownedFort.center!!.world?.playSound(ownedFort.center!!, Sound.BLOCK_ANVIL_BREAK, 1.0f, 0.05f)
+            ownedFort.center!!.world?.playSound(ownedFort.center!!, Sound.ENTITY_ENDER_EYE_DEATH, 1.0f, 0.05f)
+        }
 
         fortRepository.delete(ownedFort)
         fortCache.invalidate(ownedFort)
