@@ -89,7 +89,7 @@ class FortListener : Listener, KoinComponent {
 
         val timesBlockBroken = timesBroken.getOrDefault(event.block.location, 0)
 
-        if (timesBlockBroken + 1 < FortUtils.getFortFortification(fort)) {
+        if (timesBlockBroken < FortUtils.getFortFortification(fort)) {
             timesBroken[event.block.location] = timesBlockBroken + 1
             event.isCancelled = true
             return
