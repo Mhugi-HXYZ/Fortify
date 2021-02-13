@@ -163,6 +163,16 @@ object FortifyCommand : BaseCommand(), KoinComponent {
             return
         }
 
+        val closestFort = FortUtils.getClosestFort(ownedFort.center!!)
+        if (closestFort.first != null) {
+            val closestFortRadius = FortUtils.getFortRadius(closestFort.first!!)
+            val newFortArea = nextLevel.radius
+            if (closestFort.second <= closestFortRadius + newFortArea) {
+                sender.sendMessage("${ChatColor.RED}You are too close to an existing fort to upgrade your fort's radius")
+                return
+            }
+        }
+
         ownedFort.level += 1
 
         when (economy.withdrawPlayer(sender, nextLevel.price).transactionSuccess()) {
