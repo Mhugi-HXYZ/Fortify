@@ -21,7 +21,7 @@ class YmlLevelRepository(private val plugin: Plugin) : LevelRepository {
 
     override fun findAll(): Array<Level> {
         val levels = mutableSetOf<Level>()
-        yml.root.getKeys(false).forEach {
+        yml.root?.getKeys(false)?.forEach {
             val level = find(it)
             if (level != null) {
                 levels.add(level)
@@ -38,8 +38,8 @@ class YmlLevelRepository(private val plugin: Plugin) : LevelRepository {
         return Level().apply {
             this.id = id
             this.level = yml.getInt("$id.level")
-            name = yml.getString("$id.name")
-            icon = Material.matchMaterial(yml.getString("$id.icon"))
+            name = yml.getString("$id.name") ?: "Untitled"
+            icon = Material.matchMaterial(yml.getString("$id.icon") ?: "stone") ?: Material.STONE
             price = yml.getDouble("$id.price")
             radius = yml.getInt("$id.radius")
             fortification = yml.getInt("$id.fortification")

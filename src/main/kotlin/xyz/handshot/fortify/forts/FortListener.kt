@@ -66,7 +66,7 @@ class FortListener : Listener, KoinComponent {
 
         // TODO Implement action rule 'firewall'
         if (event.action != Action.LEFT_CLICK_BLOCK) {
-            val fort = FortUtils.getOwningFort(event.clickedBlock.location) ?: return
+            val fort = FortUtils.getOwningFort(event.clickedBlock!!.location) ?: return
             if (!fort.members.contains(event.player.uniqueId)) {
                 event.isCancelled = true
                 event.player.sendMessage("${ChatColor.RED}You do not have permission to do that here")

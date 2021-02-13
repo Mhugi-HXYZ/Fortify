@@ -23,7 +23,7 @@ class GsonFortRepository(val folder: File) : FortRepository {
 
     init {
         if (indexYml.contains("owners") && indexYml.isConfigurationSection("owners")) {
-            indexYml.getConfigurationSection("owners").getKeys(false).forEach {
+            indexYml.getConfigurationSection("owners")?.getKeys(false)?.forEach {
                 val owner = UUID.fromString(it)
                 val fortId = UUID.fromString(indexYml.getString("owners.$owner"))
                 owners[owner] = fortId

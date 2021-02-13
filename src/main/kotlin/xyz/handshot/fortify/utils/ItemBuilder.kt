@@ -19,14 +19,14 @@ fun ItemStack.amount(amount: Int): ItemStack {
 
 fun ItemStack.name(name: String): ItemStack {
     val meta = itemMeta
-    meta.displayName = ChatColor.translateAlternateColorCodes('&', name)
+    meta?.setDisplayName(ChatColor.translateAlternateColorCodes('&', name))
     itemMeta = meta
     return this
 }
 
 fun ItemStack.lore(text: String): ItemStack {
     val meta = itemMeta
-    var lore: MutableList<String>? = meta.lore
+    var lore: MutableList<String>? = meta!!.lore
     if (lore == null) {
         lore = ArrayList()
     }
@@ -73,7 +73,7 @@ fun ItemStack.type(material: Material): ItemStack {
 
 fun ItemStack.clearLore(): ItemStack {
     val meta = itemMeta
-    meta.lore = ArrayList()
+    meta!!.lore = ArrayList()
     itemMeta = meta
     return this
 }
@@ -91,7 +91,7 @@ fun ItemStack.color(color: Color): ItemStack {
     ) {
 
         val meta = itemMeta as LeatherArmorMeta
-        meta.color = color
+        meta.setColor( color)
         itemMeta = meta
         return this
     } else {
@@ -101,7 +101,7 @@ fun ItemStack.color(color: Color): ItemStack {
 
 fun ItemStack.flag(vararg flag: ItemFlag): ItemStack {
     val meta = itemMeta
-    meta.addItemFlags(*flag)
+    meta!!.addItemFlags(*flag)
     itemMeta = meta
     return this
 }

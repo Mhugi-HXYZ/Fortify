@@ -3,3 +3,5 @@ name: Fortify
 version: 1.0.0
 api-version: 1.16
 author: Marteinn
+depend:
+  - Vault

@@ -1,6 +1,7 @@
 package xyz.handshot.fortify
 
 import co.aikar.commands.PaperCommandManager
+import net.milkbowl.vault.economy.Economy
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
@@ -39,6 +40,8 @@ class FortifyPlugin : JavaPlugin(), KoinComponent {
     private val commandManager: PaperCommandManager by inject()
 
     override fun onEnable() {
+
+
         startKoin {
             modules(
                 module {
@@ -48,6 +51,7 @@ class FortifyPlugin : JavaPlugin(), KoinComponent {
                     single<FortCache> { SimpleFortCache() }
                     single<LevelRepository> { YmlLevelRepository(get()) }
                     single<LevelCache> { SimpleLevelCache() }
+                    single { server.servicesManager.getRegistration(Economy::class.java)!!.provider }
                 }
             )
         }

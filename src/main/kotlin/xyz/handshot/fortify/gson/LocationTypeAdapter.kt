@@ -17,7 +17,7 @@ class LocationTypeAdapter : TypeAdapter<Location>() {
         out.name("z")
         out.value(value.z)
         out.name("world")
-        out.value(value.world.name)
+        out.value(value.world?.name ?: "world")
         out.endObject()
     }
 

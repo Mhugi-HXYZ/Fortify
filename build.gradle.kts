@@ -9,6 +9,7 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
     jcenter()
+    maven("https://jitpack.io")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("http://nexus.okkero.com/repository/maven-releases/")
@@ -20,7 +21,8 @@ dependencies {
     implementation("com.okkero.skedule:skedule:1.2.6")
     implementation("org.koin:koin-core:2.2.2")
     implementation("co.aikar:acf-paper:0.5.0-SNAPSHOT")
-    compileOnly("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7")
+    compileOnly("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
 }
 
 tasks {
