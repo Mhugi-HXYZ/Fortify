@@ -35,6 +35,7 @@ object FortifyCommand : BaseCommand(), KoinComponent {
         sender.sendMessage("${ChatColor.YELLOW}/fortify add <player> - Add a player to your fort")
         sender.sendMessage("${ChatColor.YELLOW}/fortify remove <player> - Remove a player from your fort")
         sender.sendMessage("${ChatColor.YELLOW}/fortify delete - Delete your fort")
+        sender.sendMessage("${ChatColor.YELLOW}/fortify upgrade - Upgrade your fort to the next level")
     }
 
     @Subcommand("give")
