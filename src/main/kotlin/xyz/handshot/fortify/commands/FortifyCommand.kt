@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Subcommand
+import com.okkero.skedule.schedule
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.*
 import org.bukkit.command.CommandSender
@@ -17,6 +18,13 @@ import xyz.handshot.fortify.forts.FortCache
 import xyz.handshot.fortify.forts.FortRepository
 import xyz.handshot.fortify.utils.FortUtils
 import xyz.handshot.fortify.levels.LevelCache
+import java.util.ArrayList
+
+import kotlin.math.cos
+import kotlin.math.sin
+import org.bukkit.Material
+import org.bukkit.block.data.BlockData
+
 
 @CommandAlias("fortify|fort|f")
 object FortifyCommand : BaseCommand(), KoinComponent {
@@ -181,5 +189,35 @@ object FortifyCommand : BaseCommand(), KoinComponent {
             false -> sender.sendMessage("${ChatColor.RED}You don't have ${economy.format(nextLevel.price)} to upgrade your fort to ${nextLevel.name}")
         }
     }
+
+    @Subcommand("outline")
+    @CommandPermission("fortify.outline")
+    fun outline(sender: Player) {
+        val ownedFort = FortUtils.getOwnedFort(sender.uniqueId)
+        if (ownedFort == null) {
+            sender.sendMessage("${ChatColor.RED}You do not own a fort")
+            return
+        }
+
+        val fortLevel = levelCache.get(ownedFort.level)!!
+        val outline = arrayListOf<Location>()
+
+        val center = ownedFort.center!!
+        val areaSize = fortLevel.radius
+        val minX = center.x - areaSize
+        val minZ = center.z - areaSize
+        val maxX = center.x + areaSize
+        val maxZ = center.z + areaSize
+
+        outline.add(center.clone().apply { x = minX; z = minZ })
+        outline.add(center.clone().apply { x = maxX; z = minZ })
+        outline.add(center.clone().apply { x = minX; z = maxZ })
+        outline.add(center.clone().apply { x = maxX; z = maxZ })
+
+        outline.forEach {
+            sender.sendBlockChange(it, Material.RED_WOOL.createBlockData())
+        }
+    }
+
 
 }
