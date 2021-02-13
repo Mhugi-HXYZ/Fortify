@@ -3,6 +3,7 @@ package xyz.handshot.fortify.forts
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Location
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -21,6 +22,8 @@ class FortListener : Listener, KoinComponent {
     private val repository: FortRepository by inject()
     private val cache: FortCache by inject()
     private val timesBroken = mutableMapOf<Location, Int>()
+    private val lastMessageSent = mutableMapOf<UUID, Long>()
+    private val lastBlockBreak = mutableMapOf<UUID, Long>()
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onBlockPlace(event: BlockPlaceEvent) {
@@ -69,7 +72,9 @@ class FortListener : Listener, KoinComponent {
             val fort = FortUtils.getOwningFort(event.clickedBlock!!.location) ?: return
             if (!fort.members.contains(event.player.uniqueId)) {
                 event.isCancelled = true
-                event.player.sendMessage("${ChatColor.RED}You do not have permission to do that here")
+                if (antiSpam(event.player)) {
+                    event.player.sendMessage("${ChatColor.RED}You do not have permission to do that here")
+                }
             }
         }
     }
@@ -87,6 +92,11 @@ class FortListener : Listener, KoinComponent {
             return
         }
 
+        if (!antiSpamBlock(event.player)) {
+            event.isCancelled = true
+            return
+        }
+
         val timesBlockBroken = timesBroken.getOrDefault(event.block.location, 0)
 
         if (timesBlockBroken < FortUtils.getFortFortification(fort)) {
@@ -94,6 +104,24 @@ class FortListener : Listener, KoinComponent {
             event.isCancelled = true
             return
         }
+    }
+
+    private fun antiSpam(player: Player): Boolean {
+        val lastMessage = lastMessageSent.getOrDefault(player.uniqueId, 0)
+        if (System.currentTimeMillis() - lastMessage >= 1000) {
+            lastMessageSent[player.uniqueId] = System.currentTimeMillis()
+            return true
+        }
+        return false
+    }
+
+    private fun antiSpamBlock(player: Player): Boolean {
+        val lastBreak = lastBlockBreak.getOrDefault(player.uniqueId, 0)
+        if (System.currentTimeMillis() - lastBreak >= 250) {
+            lastBlockBreak[player.uniqueId] = System.currentTimeMillis()
+            return true
+        }
+        return false
     }
 
 }
